@@ -3,36 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SMCD IMD232 이주영</title>
+    <title>이주영 W2 Sketch1</title>
     <link
       href="//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css"
       rel="stylesheet"
       type="text/css" />
-    <link rel="stylesheet" href="./style/style.css" />
+    <link rel="stylesheet" href="../../../../style/style.css" />
+    <link rel="stylesheet" href="../../../../plugin/prism/prism.css" />
+    <script src="../../../../plugin/prism/prism.js" defer></script>
   </head>
   <body>
     <div class="viewport">
-      <header>
-        <section>
-          <div class="container">
-            <h1>SMCD IMD232 이주영</h1>
-          </div>
-        </section>
-      </header>
       <main>
         <section>
           <div class="container">
-            <ul>
-              <li><a href="./src/example/index.html">예제</a></li>
-              <li><a href="./src/w2/index.html">2주차</a></li>
-              <li><a href="./src/w3/index.html">3주차</a></li>
-            </ul>
+            <div id="canvas"></div>
           </div>
         </section>
       </main>
       <footer>
         <section>
-          <div class="container"></div>
+          <div class="container">
+            <h6>sketch.js</h6>
+            <pre
+              class="line-numbers"
+              data-src="./script/sketch.js"
+              data-line="3-8"
+              data-download-link></pre>
+          </div>
         </section>
       </footer>
     </div>
