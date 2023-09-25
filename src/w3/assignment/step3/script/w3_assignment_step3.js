@@ -45,6 +45,7 @@ function draw() {
   ellipse(center.x, center.y, radius * 2);
 
   // 원의 중심점과 마우스 커서를 연결하는 선분 그리기
+  strokeWeight(4);
   stroke(255, 0, 0);
   line(center.x, center.y, mouseX, mouseY);
 }
