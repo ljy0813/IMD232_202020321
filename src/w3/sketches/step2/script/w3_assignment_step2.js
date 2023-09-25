@@ -28,11 +28,12 @@ function draw() {
 
   // 원 그리기
   noStroke();
-  fill('salon');
-  ellipse(ellipse_center.x, ellipse_center.y, ellipse_radius * 2);
+  fill(0);
+  ellipse(ellipse_center.x, ellipse_center.y, ellipse_radius * 1);
 
   // 가속도와 속도 벡터 시각화
   stroke(0);
+  strokeWeight(4);
   line(
     ellipse_center.x,
     ellipse_center.y,
@@ -51,7 +52,7 @@ function draw() {
   // 원의 중심점과 마우스 커서를 연결하는 선분 그리기
   stroke(255, 0, 0);
   line(ellipse_center.x, ellipse_center.y, mouseX, mouseY);
-  strokeWeight(1);
+  strokeWeight(8);
   ellipse_center.normalize();
   ellipse_center.mult(500);
 }
