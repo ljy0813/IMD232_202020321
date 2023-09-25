@@ -32,6 +32,7 @@ function draw() {
   ellipse(ellipse_center.x, ellipse_center.y, ellipse_radius * 1);
 
   // 가속도와 속도 벡터 시각화
+
   stroke(0);
   strokeWeight(4);
   line(

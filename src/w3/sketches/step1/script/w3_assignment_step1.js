@@ -63,8 +63,11 @@ function draw() {
       ellipseY = 0;
     }
   }
+  stroke(0);
+  ellipse(ellipseX, ellipseY, 100, 100);
 
   stroke(255, 0, 0);
+  strokeWeight(4);
   line(ellipseX, ellipseY, ellipseX + accX.x * 1000, ellipseY);
 
   stroke(0, 0, 255);
@@ -86,8 +89,4 @@ function draw() {
     ellipseX + targetVector.x,
     ellipseY + targetVector.y
   );
-
-  noFill();
-  stroke(0);
-  ellipse(ellipseX, ellipseY, 100, 100);
 }
