@@ -15,8 +15,6 @@ function setup() {
 
   vel_ellipseX = createVector(random(-1, 1), 0); // 가로 방향의 속도 벡터 생성
   vel_ellipseY = createVector(0, random(-1, 1)); // 세로 방향의 속도 벡터 생성
-
-  frameRate(60);
 }
 
 function draw() {
@@ -45,8 +43,8 @@ function draw() {
   function draw() {
     background(220);
 
-    let accX = createVector(random(-10, 10), 0); // 가로 방향의 가속도 벡터 생성
-    let accY = createVector(0, random(-10, 10)); // 세로 방향의 가속도 벡터 생성
+    let accX = createVector(random(-15, 10), 0); // 가로 방향의 가속도 벡터 생성
+    let accY = createVector(0, random(-20, 10)); // 세로 방향의 가속도 벡터 생성
 
     vel_ellipseX.add(accX);
     vel_ellipseY.add(accY);

@@ -12,6 +12,13 @@ function setup() {
 function draw() {
   background(220);
 
+  center = createVector(random(width), random(height));
+  vel = createVector(); // 초기 속도는 0
+}
+
+function draw() {
+  background(220);
+
   if (mouseIsPressed) {
     // 중심점으로부터 마우스로 향하는 벡터
     let target = createVector(mouseX, mouseY).sub(center);

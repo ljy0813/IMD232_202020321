@@ -32,7 +32,7 @@ function draw() {
   ellipse(ellipse_center.x, ellipse_center.y, ellipse_radius * 2);
 
   // 가속도와 속도 벡터 시각화
-  stroke('black');
+  stroke(0);
   line(
     ellipse_center.x,
     ellipse_center.y,
@@ -53,5 +53,5 @@ function draw() {
   line(ellipse_center.x, ellipse_center.y, mouseX, mouseY);
   strokeWeight(1);
   ellipse_center.normalize();
-  ellipse_center.mult(900);
+  ellipse_center.mult(500);
 }
