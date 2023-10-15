@@ -4,7 +4,7 @@ class Body {
     this.vel = createVector(0, 0);
     this.acc = createVector(0, 0);
     this.mass = mass;
-    this.rad = sqrt(mass) * 5; // 반지름은 질량의 제곱근에 비례
+    this.rad = this.mass ** (1 / 2) * 5; // 반지름은 질량의 제곱근에 비례
   }
 
   attract(body) {

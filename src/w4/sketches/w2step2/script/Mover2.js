@@ -8,6 +8,7 @@ class Mover {
     this.isHover = false;
     this.isDragging = false;
     this.draggingOffset = createVector();
+    this.throwingForce = createVector();
   }
 
   applyForce(force) {
@@ -46,7 +47,7 @@ class Mover {
 
   mouseMoved(mX, mY) {
     const d = dist(mX, mY, this.pos.x, this.pos.y);
-    this.isHover = d < this.rad;
+    this.isHover = d <= this.rad;
   }
 
   mousePressed(mX, mY) {
@@ -54,6 +55,7 @@ class Mover {
       this.isDragging = true;
       this.draggingOffset.x = this.pos.x - mX;
       this.draggingOffset.y = this.pos.y - mY;
+      this.mVec.set(mX, mY);
     }
   }
 
@@ -67,9 +69,8 @@ class Mover {
   mouseReleased() {
     if (this.isDragging) {
       this.isDragging = false;
-      throwingForce = p5.Vector.sub(mVec, pMVec);
-      throwingForce.mult(0.1);
-      this.applyForce(throwingForce);
+      this.throwingForce = p5.Vector.sub(this.mVec, this.pMVec) * mult(0.1);
+      this.applyForce(this.throwingForce);
     }
   }
 }
