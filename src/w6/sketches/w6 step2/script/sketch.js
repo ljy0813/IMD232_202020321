@@ -24,3 +24,7 @@ function draw() {
     }
   }
 }
+
+function mousePressed() {
+  emitter.emit(mouseX, mouseY, 100);
+}
