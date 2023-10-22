@@ -6,11 +6,11 @@ function setup() {
   colorMode(HSL, 360, 100, 100);
   g = createVector(0, 0.1);
 
-  background('salmon');
+  background('white');
 }
 
 function draw() {
-  background('salmon');
+  background('white');
   console.log('createdEmittersNum :', emitters.length);
 
   for (let i = emitters.length - 1; i >= 0; i--) {
