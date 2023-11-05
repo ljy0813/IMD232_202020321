@@ -1,78 +1,35 @@
-let gravity;
 let emitter;
+let gravity;
 
 function setup() {
   setCanvasContainer('canvas', 2, 1, true);
-  colorMode(HSL, 360, 100, 100, 100);
-  createCanvas(400, 400);
-  gravity = createVector(0, 0.1);
-  emitter = new Emitter(width / 2, height / 2);
+  rectMode(CENTER);
+  colorMode(HSB, 360, 100, 100, 100);
+  emitter = new Emitter(width / 2, 0); // 시작하는 위치를 변경
+  gravity = createVector(0, 0.1); // 중력을 느리게 설정
   background(360, 0, 100);
 }
 
 function draw() {
-  console.log('현재 파티클 개수: ' + emitter.particles.length);
-  for (let i = 0; i < 10; i++) {
-    emitter.createParticle();
-  }
+  background(360, 0, 100);
   emitter.update();
   emitter.display();
+  console.log('파티클 갯수:', emitter.particles.length);
 }
-
-function mousePressed() {
-  emitter.setLocation(mouseX, mouseY);
-}
-
-class Particle {
-  constructor(x, y) {
-    this.position = createVector(x, y);
-    this.velocity = createVector(random(19, 20), random(19, 20));
-    this.acceleration = createVector(0, 0);
-    this.lifespan = 60;
-  }
-
-  applyForce(force) {
-    this.acceleration.add(force);
-  }
-
-  update() {
-    this.velocity.add(this.acceleration);
-    this.position.add(this.velocity);
-    this.acceleration.mult(0);
-    this.velocity.add(gravity);
-    this.lifespan--;
-  }
-
-  display() {
-    fill(360, 100, 50, map(this.lifespan, 0, 60, 0, 100));
-    noStroke();
-    ellipse(this.position.x, this.position.y, 10, 10);
-  }
-
-  isDead() {
-    return this.lifespan <= 0 || this.position.y > height;
-  }
-}
-
 class Emitter {
   constructor(x, y) {
     this.particles = [];
-    this.location = createVector(x, y);
-  }
-
-  setLocation(x, y) {
-    this.location.x = x;
-    this.location.y = y;
-  }
-
-  createParticle() {
-    let p = new Particle(this.location.x, this.location.y);
-    this.particles.push(p);
+    this.position = createVector(x, y);
   }
 
   update() {
+    if (random(1) < 0.5) {
+      // 파티클을 더 자주 생성
+      this.createParticle();
+    }
+
     for (let i = this.particles.length - 1; i >= 0; i--) {
-      let p = this.particles[i];
+      const p = this.particles[i];
       p.applyForce(gravity);
       p.update();
       if (p.isDead()) {
@@ -82,8 +39,49 @@ class Emitter {
   }
 
   display() {
-    for (let p of this.particles) {
+    for (const p of this.particles) {
       p.display();
     }
+  }
+
+  createParticle() {
+    const x = random(width);
+    const y = random(-height / 2, 0); // 파티클이 화면 절반 이상 차 있도록 위치 설정
+    const p = new Particle(x, y, random(360), 100, 100);
+    this.particles.push(p);
+  }
+}
+class Particle {
+  constructor(x, y, h, s, v) {
+    this.position = createVector(x, y);
+    this.velocity = createVector(0, random(1, 3)); // 떨어지는 속도를 느리게 설정
+    this.size = 10;
+    this.angle = random(TWO_PI);
+    this.rotationSpeed = random(-0.1, 0.1); // 더 빠른 회전 속도 설정
+    this.color = color(h, s, v);
+  }
+
+  applyForce(force) {
+    this.velocity.add(force);
+    this.velocity.mult(0.96);
+  }
+
+  update() {
+    this.position.add(this.velocity);
+    this.angle += this.rotationSpeed;
+  }
+
+  isDead() {
+    return this.position.y > height;
+  }
+
+  display() {
+    noStroke();
+    fill(this.color);
+    push();
+    translate(this.position.x, this.position.y);
+    rotate(this.angle);
+    rect(0, 0, this.size, this.size);
+    pop();
   }
 }
