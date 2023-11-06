@@ -1,136 +1,44 @@
-// Vehicle 클래스 - 차량을 나타내는 클래스입니다.
-class Vehicle {
-  constructor(x, y, mass, rad, speedMx, forceMx, color) {
-    // 초기 위치를 나타내는 벡터를 생성합니다.
-    this.pos = createVector(x, y);
-    // 무작위 방향으로 초기 속도 벡터를 생성합니다.
-    this.vel = p5.Vector.random2D();
-    // 가속도 벡터를 생성합니다.
-    this.acc = createVector();
-    // 차량의 질량을 지정합니다.
-    this.mass = mass;
-    // 차량의 반경을 지정합니다.
-    this.rad = rad;
-    // 최대 속도를 지정합니다.
-    this.speedMx = speedMx;
-    // 최대 힘을 지정합니다.
-    this.forceMx = forceMx;
-    // 차량 이웃 범위 반경을 설정합니다.
-    this.neighborhooodRad = 50;
-    // 차량의 색상을 지정합니다.
-    this.color = color;
-  }
+// Class Traffic
+class Traffic {
+  constructor() {
+    /// constructor() 함수: Traffic 클래스 인스턴스 생성 시 필요한 초기화 작업을 수행하는데 이용
+    this.vehicles = [];
+  } // 시뮬레이션을 업데이트하고 차량을 그리는 메서드
 
-  // 다른 차량과의 인접성을 유지하는 행동을 구현한 함수인 cohesion을 정의합니다.
-  cohesion(others) {
-    // 관련 차량 수와 조절력 벡터를 초기화합니다.
-    let cnt = 0;
-    const steer = createVector(0, 0);
-    // 모든 다른 차량에 대해 반복합니다.
-    others.forEach((each) => {
-      if (each !== this) {
-        // 현재 차량과 다른 차량 사이의 거리 제곱을 계산합니다.
-        const distSq =
-          (this.pos.x - each.pos.x) ** 2 + (this.pos.y - each.pos.y) ** 2;
-        // 만약 거리가 이웃 범위 이내라면 조절력 벡터에 다른 차량의 위치를 더합니다.
-        if (distSq < this.neighborhooodRad ** 2) {
-          steer.add(each.pos);
-          cnt++;
-        }
-      }
+  run() {
+    this.vehicles.forEach((eachVehicle) => {
+      // 모든 Vehicle에 대해 반복
+      const separate = eachVehicle.separate(this.vehicles); // Vehicle들 간의 격리 행동을 계산하고 적용
+      separate.mult(1); // 격리의 영향을 증폭
+      eachVehicle.applyForce(separate);
+
+      const align = eachVehicle.align(this.vehicles); // Vehicle들 간의 방향 일치 행동을 계산하고 적용
+      align.mult(0.5); // 방향 일치의 영향을 줄임
+      eachVehicle.applyForce(align);
+
+      const cohesion = eachVehicle.cohesion(this.vehicles); // Vehicle들 간의 인접성 행동을 계산하고 적용
+      cohesion.mult(0.5); // 인접성의 영향 줄임
+      eachVehicle.applyForce(cohesion);
+
+      eachVehicle.update(); // Vehicle의 상태를 업데이트하고 화면 경계를 벗어나지 않도록 함
+      eachVehicle.borderInfinite(); // 객체가 화면 경계 벗어나지 않도록 처리
+      eachVehicle.display(); // Vehicle을 화면에 그림
     });
-    // 이웃 차량이 존재하면 조절력 벡터를 계산하고 반환합니다.
-    if (cnt > 0) {
-      steer.div(cnt);
-      steer.sub(this.pos);
-      steer.setMag(this.speedMx);
-      steer.sub(this.vel);
-      steer.limit(this.forceMx);
-    }
-    return steer;
   }
 
-  // 다른 차량과의 일치된 방향을 유지하는 행동을 구현한 함수인 align을 정의합니다.
-  align(others) {
-    // 관련 차량 수와 조절력 벡터를 초기화합니다.
-    let cnt = 0;
-    const steer = createVector(0, 0);
-    // 모든 다른 차량에 대해 반복합니다.
-    others.forEach((each) => {
-      if (each !== this) {
-        // 현재 차량과 다른 차량 사이의 거리 제곱을 계산합니다.
-        const distSq =
-          (this.pos.x - each.pos.x) ** 2 + (this.pos.y - each.pos.y) ** 2;
-        // 만약 거리가 이웃 범위 이내라면 조절력 벡터에 다른 차량의 속도를 더합니다.
-        steer.add(each.vel);
-        cnt++;
-      }
-    });
-    // 이웃 차량이 존재하면 조절력 벡터를 계산하고 반환합니다.
-    if (cnt > 0) {
-      steer.div(cnt);
-      steer.setMag(this.speedMx);
-      steer.sub(this.vel);
-      steer.limit(this.forceMx);
-    }
-    return steer;
-  }
-
-  // 다른 차량과의 격리를 유지하는 행동을 구현한 함수인 separate을 정의합니다.
-  separate(others) {
-    // 관련 차량 수와 조절력 벡터를 초기화합니다.
-    let cnt = 0;
-    const steer = createVector(0, 0);
-    // 모든 다른 차량에 대해 반복합니다.
-    others.forEach((each) => {
-      if (each !== this) {
-        // 현재 차량과 다른 차량 사이의 거리를 계산합니다.
-        const dist = this.pos.dist(each.pos);
-        // 만약 거리가 0보다 크고 두 차량의 반경 합보다 작다면 조절력을 추가합니다.
-        if (dist > 0 && this.rad + each.rad > dist) {
-          const distNormal = dist / (this.rad + each.rad);
-          const towardMeVec = p5.Vector.sub(this.pos, each.pos);
-          towardMeVec.setMag(1 / distNormal);
-          steer.add(towardMeVec);
-          cnt++;
-        }
-      }
-    });
-    // 이웃 차량이 존재하면 조절력 벡터를 계산하고 반환합니다.
-    if (cnt > 0) {
-      steer.div(cnt);
-      steer.setMag(this.speedMx);
-      steer.sub(this.vel);
-      steer.limit(this.forceMx);
-    }
-    return steer;
-  }
-
-  // 힘을 차량에 적용하는 함수를 정의합니다.
-  applyForce(force) {
-    const forceDivedByMass = p5.Vector.div(force, this.mass);
-    this.acc.add(forceDivedByMass);
-  }
-
-  // 차량의 상태를 업데이트하는 함수를 정의합니다.
-  update() {
-    this.vel.add(this.acc);
-    this.vel.limit(this.speedMx);
-    this.pos.add(this.vel);
-    this.acc.mult(0);
-  }
-
-  // 차량이 화면 경계를 벗어나지 않도록 하는 함수를 정의합니다.
-  borderInfinite() {
-    if (this.pos.x < -infiniteOffset) {
-      this.pos.x = width + infiniteOffset;
-    } else if (this.pos.x > width + infiniteOffset) {
-      this.pos.x = -infiniteOffset;
-    }
-    if (this.pos.y < -infiniteOffset) {
-      this.pos.y = height + infiniteOffset;
-    } else if (this.pos.y > height + infiniteOffset) {
-      this.pos.y = -infiniteOffset;
-    }
+  addVehicle(x, y) {
+    // 새로운 Vehicle을 추가하는 메서드 // 주어진 위치에 Vehicle을 생성
+    // const mass = floor(random(1, 3));
+    const mass = 1;
+    this.vehicles.push(
+      new Vehicle(x, y, mass, mass * 12, 5, 0.1, color(random(210), 100, 40))
+    );
+    // Vehicle의 질량과 크기를 지정하고 무작위 색상을 설정하여 배열에 추가
+    // x: vehicle 초기 위치 x 값, y: vehicle 초기 위치 y 값
+    // mass: vehicle 질량
+    // mass*12: vehcile 반경 계산을 위한 값
+    // 5: vehicle 최대 속도
+    // 0.1: vehicle이 받을 수 있는 최대 힘
+    // color(random(210), 100, 40): vehicle 색상 지정
   }
 }
